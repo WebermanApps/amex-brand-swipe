@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<title>Brand Swipe</title>
+<title>Jane's Personal Shopper</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600&family=Khand:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -68,7 +68,7 @@ footer{background:var(--mw-dark-surface);color:rgba(255,255,255,.6);text-align:c
 </style></head><body>
 <header><span class="wordmark">MAX WEBERMAN</span><button class="link mw-hover" id="reset">Start Over</button></header>
 <main id="app"></main>
-<footer>Brand Swipe · Made For Mom</footer>
+<footer>Jane's Personal Shopper</footer>
 <div class="toast" id="toast"></div>
 <script>
 const BRANDS=[
@@ -171,7 +171,7 @@ function summary(){
  const ranked=Object.values(cats).map(c=>({...c,score:c.love.length*3+c.yes.length*2+c.maybe.length})).filter(c=>c.score>0).sort((a,b)=>b.score-a.score||b.love.length-a.love.length||b.yes.length-a.yes.length);
  return{ranked,all:cats};
 }
-function asText(){const {ranked}=summary();let t="Mom's Shopping Profile (Brand Swipe)\nScore: Love = 3, Yes = 2, Maybe = 1\n\n";
+function asText(){const {ranked}=summary();let t="Jane's Shopping Profile (Jane's Personal Shopper)\nScore: Love = 3, Yes = 2, Maybe = 1\n\n";
  ranked.forEach((c,i)=>{t+=`${i+1}. ${c.category} (score ${c.score})\n`;if(c.love.length)t+=`   ♥ Love: ${c.love.join(", ")}\n`;if(c.yes.length)t+=`   ✓ Yes: ${c.yes.join(", ")}\n`;if(c.maybe.length)t+=`   ? Maybe: ${c.maybe.join(", ")}\n`});
  const sk=BRANDS.filter(b=>S.picks[b.name]==="no").map(b=>b.name);t+=`\nNo: ${sk.join(", ")||"None"}\n`;return t}
 function asJSON(){const {ranked}=summary();return JSON.stringify({generated:new Date().toISOString(),scoring:"love=3, yes=2, maybe=1",topCategories:ranked.map((c,i)=>({rank:i+1,category:c.category,score:c.score,love:c.love,yes:c.yes,maybe:c.maybe})),picks:BRANDS.map(b=>({brand:b.name,category:b.category,choice:S.picks[b.name]||null}))},null,2)}
