@@ -37,12 +37,12 @@ p{font-size:16px}h2{font-size:26px}h3{font-size:20px}
 .btn.c-maybe{border-color:var(--c-maybe);color:#a36f0c}.btn.c-maybe:hover{background:var(--c-maybe);color:#fff}
 .btn.c-love{border-color:var(--c-love);color:var(--c-love)}.btn.c-love:hover{background:var(--c-love);color:#fff}
 .btn.c-yes{border-color:var(--c-yes);background:var(--c-yes);color:#fff}.btn.c-yes:hover{background:#25875a;border-color:#25875a}
-.swipehint{text-align:center;font-size:14px;color:var(--mw-muted-text);margin:10px 0 0;letter-spacing:.02em;transition:opacity .2s ease-out}
+.swipehint{text-align:center;font-size:14px;color:var(--mw-muted-text);margin:10px 0 0;letter-spacing:.02em;transition:opacity .25s ease-out,transform .25s ease-out}
 .swipehint .l{color:var(--c-no);display:inline-block;animation:pl 1.4s ease-in-out infinite}.swipehint .r{color:var(--c-yes);display:inline-block;animation:pr 1.4s ease-in-out infinite}
-.swipehint.gone{opacity:0}
+.swipehint.gone{opacity:0;transform:scale(.96)}
 @keyframes pl{50%{transform:translateX(-4px);opacity:.55}}@keyframes pr{50%{transform:translateX(4px);opacity:.55}}
-.card.nudge{animation:nudge 2.4s ease-in-out .6s 2}
-.card.nudge .stamp.skip{animation:sn 2.4s ease-in-out .6s 2}.card.nudge .stamp.like{animation:sy 2.4s ease-in-out .6s 2}
+.card.nudge{animation:nudge 2.4s ease-in-out .3s 2}
+.card.nudge .stamp.skip{animation:sn 2.4s ease-in-out .3s 2}.card.nudge .stamp.like{animation:sy 2.4s ease-in-out .3s 2}
 @keyframes nudge{0%,100%{transform:none}20%{transform:translateX(-22px) rotate(-4deg)}40%{transform:none}60%{transform:translateX(22px) rotate(4deg)}80%{transform:none}}
 @keyframes sn{0%,40%,100%{opacity:0}20%{opacity:.45}}@keyframes sy{0%,40%,100%{opacity:0}60%{opacity:.45}}
 @media (prefers-reduced-motion:reduce){.card.nudge,.card.nudge .stamp{animation:none}.swipehint .l,.swipehint .r{animation:none}}
@@ -135,28 +135,34 @@ function cardView(){
  const b=BRANDS[S.i];
  app.innerHTML=`<h1>Which Brands Do You Love?</h1><p class="muted" style="margin:4px 0 0">Swipe right for Yes, left for No. Or tap Maybe or Love.</p>
  <div class="progress"><span>${S.i+1}/${BRANDS.length}</span><button class="link mw-hover" id="back" ${S.i?"":"hidden"}>Undo</button></div><div class="bar"><i style="width:${S.i/BRANDS.length*100}%"></i></div>
- ${S.swiped?"":`<p class="swipehint" id="swipehint"><span class="l">←</span> Swipe No · Swipe Yes <span class="r">→</span></p>`}<div class="stack"><div class="card mw-hover${S.i===0&&!S.swiped?" nudge":""}" id="card"><span class="stamp like">Yes</span><span class="stamp skip">No</span>
+ <p class="swipehint gone" id="swipehint" aria-live="polite"><span class="l">←</span> Swipe No · Swipe Yes <span class="r">→</span></p><div class="stack"><div class="card mw-hover" id="card"><span class="stamp like">Yes</span><span class="stamp skip">No</span>
  <div class="emoji">${b.emoji}</div><div class="cat" style="--cat-bg:${CATC[b.category]||"transparent"}">${b.category}</div><h2>${b.name}</h2><p>${b.desc}</p></div></div>
  <div class="btns"><button class="btn c-no mw-hover" data-a="no">← No</button><button class="btn c-maybe mw-hover" data-a="maybe">? Maybe</button><button class="btn c-love mw-hover" data-a="love">♥ Love</button><button class="btn c-yes mw-hover" data-a="yes">Yes →</button></div>
  <p class="hint muted keyhint">Keys: ← No · → Yes · ↓ or M Maybe · ↑ or L Love</p>`;
  app.querySelectorAll(".btn").forEach(x=>x.onclick=()=>act(x.dataset.a));
  const bk=document.getElementById("back");if(bk)bk.onclick=()=>{S.i--;delete S.picks[BRANDS[S.i].name];save();render()};
  drag(document.getElementById("card"));
+ clearTimeout(idleT);if(S.i===0)setTimeout(showHint,150);else armIdle();
 }
+let idleT;const IDLE=5000;
+function armIdle(){clearTimeout(idleT);idleT=setTimeout(()=>{if(document.getElementById("card"))showHint()},IDLE)}
+function showHint(){const h=document.getElementById("swipehint"),c=document.getElementById("card");if(!h||!c)return;h.classList.remove("gone");
+ c.classList.remove("nudge");void c.offsetWidth;c.classList.add("nudge")}
+function hideHint(){const h=document.getElementById("swipehint"),c=document.getElementById("card");if(h)h.classList.add("gone");if(c)c.classList.remove("nudge")}
 function act(a,dx=0,dy=0){
- if(!S.swiped){S.swiped=true;const h=document.getElementById("swipehint");if(h)h.classList.add("gone")}
+ hideHint();clearTimeout(idleT);
  const c=document.getElementById("card");const b=BRANDS[S.i];S.picks[b.name]=a;S.i++;save();
  const tx=a==="yes"?600:a==="no"?-600:0,ty=a==="love"?-700:a==="maybe"?700:0;
  c.style.transition="transform .25s ease-out,opacity .25s";c.style.transform=`translate(${tx||dx}px,${ty||dy}px) rotate(${tx/30}deg)`;c.style.opacity=0;
  setTimeout(render,230);
 }
 function drag(c){let sx,sy,on=false;
- c.onpointerdown=e=>{c.classList.remove("nudge");on=true;sx=e.clientX;sy=e.clientY;c.setPointerCapture(e.pointerId);c.style.transition="none"};
+ c.onpointerdown=e=>{hideHint();clearTimeout(idleT);on=true;sx=e.clientX;sy=e.clientY;c.setPointerCapture(e.pointerId);c.style.transition="none"};
  c.onpointermove=e=>{if(!on)return;const dx=e.clientX-sx,dy=e.clientY-sy;c.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/20}deg)`;
   c.querySelector(".like").style.opacity=dx>0?Math.min(dx/100,1):0;c.querySelector(".skip").style.opacity=dx<0?Math.min(-dx/100,1):0};
  c.onpointerup=c.onpointercancel=e=>{if(!on)return;on=false;const dx=e.clientX-sx,dy=e.clientY-sy;
   if(dx>100)act("yes");else if(dx<-100)act("no");
-  else{c.style.transition="transform .2s ease-out";c.style.transform="";c.querySelectorAll(".stamp").forEach(s=>s.style.opacity=0)}};
+  else{armIdle();c.style.transition="transform .2s ease-out";c.style.transform="";c.querySelectorAll(".stamp").forEach(s=>s.style.opacity=0)}};
 }
 document.onkeydown=e=>{if(S.i>=BRANDS.length||!document.getElementById("card"))return;const k={ArrowRight:"yes",ArrowLeft:"no",ArrowDown:"maybe",ArrowUp:"love",m:"maybe",M:"maybe",l:"love",L:"love"}[e.key];if(k){e.preventDefault();act(k)}};
 function summary(){
@@ -171,7 +177,7 @@ function asText(){const {ranked}=summary();let t="Mom's Shopping Profile (Brand 
 function asJSON(){const {ranked}=summary();return JSON.stringify({generated:new Date().toISOString(),scoring:"love=3, yes=2, maybe=1",topCategories:ranked.map((c,i)=>({rank:i+1,category:c.category,score:c.score,love:c.love,yes:c.yes,maybe:c.maybe})),picks:BRANDS.map(b=>({brand:b.name,category:b.category,choice:S.picks[b.name]||null}))},null,2)}
 function dl(name,data,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click()}
 function results(){
- document.body.classList.remove("swiping");
+ document.body.classList.remove("swiping");clearTimeout(idleT);
  const {ranked}=summary();const n=v=>Object.values(S.picks).filter(x=>x===v).length;
  app.innerHTML=`<h1>Your Shopping Profile</h1><p class="muted">${n("love")} Love · ${n("yes")} Yes · ${n("maybe")} Maybe · ${n("no")} No</p>
  <h3 style="margin-top:20px">Top Categories</h3>
