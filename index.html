@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#ffffff"><meta name="color-scheme" content="light only">
 <title>Jane's Shopping Quiz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600&family=Khand:wght@700&display=swap" rel="stylesheet">
@@ -51,8 +51,8 @@ p{font-size:16px}h2{font-size:26px}h3{font-size:20px}
 .card .cat{background:var(--cat-bg,transparent)}
 .btns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .btn{font-family:var(--mw-font-body);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);background:transparent;color:var(--mw-primary);padding:10px 2px;min-height:52px;border-radius:0;touch-action:manipulation;white-space:nowrap;cursor:pointer}
-.btn:hover{background:var(--mw-primary);color:var(--mw-primary-foreground)}
-.btn.solid{background:var(--mw-primary);color:var(--mw-primary-foreground)}
+.btn:hover{background:var(--mw-secondary)}
+.btn.solid{background:#fff;color:var(--mw-primary);border-width:3px}
 .hint{text-align:center;font-size:13px;margin:10px 0 0}
 @media (hover:none){.keyhint{display:none}}
 .link{min-height:44px;min-width:44px}
@@ -63,8 +63,8 @@ footer{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
 .rank .top{display:flex;justify-content:space-between;align-items:baseline}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chip{background:var(--mw-secondary);border-radius:999px;padding:3px 10px;font-size:14px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
-footer{background:var(--mw-dark-surface);color:rgba(255,255,255,.6);text-align:center;font-size:12px;padding:16px;letter-spacing:var(--mw-tracking-label);text-transform:uppercase}
-.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--mw-primary);color:#fff;padding:10px 16px;border-radius:.5rem;opacity:0;transition:opacity .2s;pointer-events:none}
+footer{background:#FAF8F4;border-top:1px solid var(--mw-border);color:var(--mw-muted-text);text-align:center;font-size:12px;padding:16px;letter-spacing:var(--mw-tracking-label);text-transform:uppercase}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:#fff;color:var(--mw-foreground);border:1px solid var(--mw-border);box-shadow:0 6px 18px rgba(10,10,10,.12);padding:10px 16px;border-radius:.5rem;opacity:0;transition:opacity .2s;pointer-events:none}
 </style></head><body>
 <header><span class="wordmark">MAX WEBERMAN</span><button class="link mw-hover" id="reset">Start Over</button></header>
 <main id="app"></main>
