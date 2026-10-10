@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff"><meta name="color-scheme" content="light only">
-<title>Jane's Shopping Quiz</title>
+<title>Mom's Shopping Quiz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600&family=Khand:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -78,7 +78,7 @@ html{color-scheme:light only}
 .mw-share{min-height:44px;min-width:44px;padding:0 14px;border:2px solid var(--mw-ink);background:#fff;color:var(--mw-ink);font-family:Khand,Hind,system-ui,sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;border-radius:0;cursor:pointer}
 .mw-share-float{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50}
 
-/* Jane's Shopping Quiz: Share button in the header (brand share spec) */
+/* Mom's Shopping Quiz: Share button in the header (brand share spec) */
 header .mw-share{margin-left:8px;font-size:12px;padding:0 10px}
 
 </style><script id="mw-share">(function(){function go(){if(document.getElementById('mwShare'))return;var b=document.createElement('button');b.id='mwShare';b.type='button';b.className='mw-share';b.textContent='⇪ Share';b.setAttribute('aria-label','Share this page');
@@ -92,7 +92,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </head><body>
 <header><span class="wordmark">MAX WEBERMAN</span><button class="link mw-hover" id="reset">Start Over</button></header>
 <main id="app"></main>
-<footer>Jane's Shopping Quiz</footer>
+<footer>Mom's Shopping Quiz</footer>
 <div class="toast" id="toast"></div>
 <script>
 const BRANDS=[
@@ -195,7 +195,7 @@ function summary(){
  const ranked=Object.values(cats).map(c=>({...c,score:c.love.length*3+c.yes.length*2+c.maybe.length})).filter(c=>c.score>0).sort((a,b)=>b.score-a.score||b.love.length-a.love.length||b.yes.length-a.yes.length);
  return{ranked,all:cats};
 }
-function asText(){const {ranked}=summary();let t="Jane's Shopping Profile (Jane's Shopping Quiz)\nScore: Love = 3, Yes = 2, Maybe = 1\n\n";
+function asText(){const {ranked}=summary();let t="Mom's Shopping Profile (Mom's Shopping Quiz)\nScore: Love = 3, Yes = 2, Maybe = 1\n\n";
  ranked.forEach((c,i)=>{t+=`${i+1}. ${c.category} (score ${c.score})\n`;if(c.love.length)t+=`   ♥ Love: ${c.love.join(", ")}\n`;if(c.yes.length)t+=`   ✓ Yes: ${c.yes.join(", ")}\n`;if(c.maybe.length)t+=`   ? Maybe: ${c.maybe.join(", ")}\n`});
  const sk=BRANDS.filter(b=>S.picks[b.name]==="no").map(b=>b.name);t+=`\nNo: ${sk.join(", ")||"None"}\n`;return t}
 function asJSON(){const {ranked}=summary();return JSON.stringify({generated:new Date().toISOString(),scoring:"love=3, yes=2, maybe=1",topCategories:ranked.map((c,i)=>({rank:i+1,category:c.category,score:c.score,love:c.love,yes:c.yes,maybe:c.maybe})),picks:BRANDS.map(b=>({brand:b.name,category:b.category,choice:S.picks[b.name]||null}))},null,2)}
