@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
 <title>Brand Swipe</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600&family=Khand:wght@700&display=swap" rel="stylesheet">
@@ -11,20 +12,25 @@
 .mw-hover:active{transform:scale(.98)}
 @media (prefers-reduced-motion:reduce){.mw-hover,.mw-hover:hover{transition:none;transform:none}}
 *{box-sizing:border-box}html,body{margin:0;background:var(--mw-background);color:var(--mw-foreground);font-family:var(--mw-font-body);-webkit-tap-highlight-color:transparent}
-body{min-height:100dvh;display:flex;flex-direction:column}
-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--mw-border)}
+body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body.swiping{height:100vh;height:100dvh;overflow:hidden;overscroll-behavior:none}
+body.swiping footer{display:none}
+body.swiping main{display:flex;flex-direction:column;min-height:0}
+header{padding:calc(10px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--mw-border)}
 .wordmark{font-family:var(--mw-font-heading);font-weight:700;letter-spacing:var(--mw-tracking-label);font-size:14px}
-main{flex:1;max-width:480px;width:100%;margin:0 auto;padding:20px}
+main{flex:1;max-width:480px;width:100%;margin:0 auto;padding:14px calc(16px + env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
 h1,h2,h3{font-family:var(--mw-font-heading);font-weight:700;line-height:1.1;letter-spacing:-.01em;margin:0 0 8px}
-h1{font-size:34px}h2{font-size:26px}h3{font-size:20px}
+h1{font-size:clamp(26px,7.5vw,34px)}
+p{font-size:16px}h2{font-size:26px}h3{font-size:20px}
 .muted{color:var(--mw-muted-text)}
 .progress{display:flex;justify-content:space-between;font-size:13px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);margin:12px 0 6px}
 .bar{height:4px;background:var(--mw-secondary);border-radius:4px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--c-yes),var(--c-maybe),var(--c-love));opacity:.75;width:0;transition:width .25s}
-.stack{position:relative;height:380px;margin:20px 0;touch-action:none}
+.stack{position:relative;flex:1;min-height:240px;max-height:440px;margin:14px 0;touch-action:none}
 .card{position:absolute;inset:0;background:#fff;border:1px solid var(--mw-border);border-radius:1rem;box-shadow:0 4px 16px rgba(10,10,10,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;user-select:none;cursor:grab}
-.card .emoji{font-size:72px;line-height:1;margin-bottom:18px}
+.card{touch-action:none;padding:20px}
+.card .emoji{font-size:clamp(52px,16vw,72px);line-height:1;margin-bottom:18px}
 .card .cat{font-size:12px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);border:1px solid var(--mw-border);padding:4px 10px;border-radius:999px;margin-bottom:10px}
-.card h2{font-size:36px}.card p{margin:6px 0 0;color:var(--mw-muted-text);font-size:17px}
+.card h2{font-size:clamp(28px,8.5vw,36px)}.card p{margin:6px 0 0;color:var(--mw-muted-text);font-size:17px}
 .stamp{position:absolute;top:20px;font-family:var(--mw-font-heading);font-size:24px;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);padding:2px 10px;opacity:0;text-transform:uppercase}
 .stamp.like{left:20px;color:var(--c-yes);border-color:var(--c-yes)}.stamp.skip{right:20px;color:var(--c-no);border-color:var(--c-no)}
 .btn.c-no{border-color:var(--c-no);color:var(--c-no)}.btn.c-no:hover{background:var(--c-no);color:#fff}
@@ -34,12 +40,15 @@ h1{font-size:34px}h2{font-size:26px}h3{font-size:20px}
 .lbl-love{color:var(--c-love)}.lbl-yes{color:var(--c-yes)}.lbl-maybe{color:#a36f0c}
 .chip.love{background:#fde8ef}.chip.yes{background:#e6f4ec}.chip.maybe{background:#fbf1dc}
 .card .cat{background:var(--cat-bg,transparent)}
-.btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.btn{font-family:var(--mw-font-body);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);background:transparent;color:var(--mw-primary);padding:14px 4px;border-radius:0;cursor:pointer}
+.btns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.btn{font-family:var(--mw-font-body);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);background:transparent;color:var(--mw-primary);padding:10px 2px;min-height:52px;border-radius:0;touch-action:manipulation;white-space:nowrap;cursor:pointer}
 .btn:hover{background:var(--mw-primary);color:var(--mw-primary-foreground)}
 .btn.solid{background:var(--mw-primary);color:var(--mw-primary-foreground)}
-.hint{text-align:center;font-size:13px;margin-top:14px}
-.link{background:none;border:0;font:inherit;font-size:12px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);border-bottom:1px solid rgba(10,10,10,.3);cursor:pointer;padding:2px 0}
+.hint{text-align:center;font-size:13px;margin:10px 0 0}
+@media (hover:none){.keyhint{display:none}}
+.link{min-height:44px;min-width:44px}
+footer{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+.link{background:none;border:0;font:inherit;font-size:13px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);border-bottom:1px solid rgba(10,10,10,.3);cursor:pointer;padding:2px 0}
 .link:hover{color:var(--mw-foreground);border-color:var(--mw-foreground)}
 .rank{border:1px solid var(--mw-border);border-radius:.75rem;padding:14px 16px;margin:10px 0}
 .rank .top{display:flex;justify-content:space-between;align-items:baseline}
@@ -113,13 +122,14 @@ const app=document.getElementById("app");
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.style.opacity=1;setTimeout(()=>e.style.opacity=0,1600)}
 function render(){S.i>=BRANDS.length?results():cardView()}
 function cardView(){
+ document.body.classList.add("swiping");
  const b=BRANDS[S.i];
- app.innerHTML=`<h1>Which Brands Do You Love?</h1><p class="muted">Swipe right for Yes, left for No. Or tap Maybe or Love.</p>
+ app.innerHTML=`<h1>Which Brands Do You Love?</h1><p class="muted" style="margin:4px 0 0">Swipe right for Yes, left for No. Or tap Maybe or Love.</p>
  <div class="progress"><span>${S.i+1}/${BRANDS.length}</span><button class="link mw-hover" id="back" ${S.i?"":"hidden"}>Undo</button></div><div class="bar"><i style="width:${S.i/BRANDS.length*100}%"></i></div>
  <div class="stack"><div class="card mw-hover" id="card"><span class="stamp like">Yes</span><span class="stamp skip">No</span>
  <div class="emoji">${b.emoji}</div><div class="cat" style="--cat-bg:${CATC[b.category]||"transparent"}">${b.category}</div><h2>${b.name}</h2><p>${b.desc}</p></div></div>
  <div class="btns"><button class="btn c-no mw-hover" data-a="no">✕ No</button><button class="btn c-maybe mw-hover" data-a="maybe">? Maybe</button><button class="btn c-love mw-hover" data-a="love">♥ Love</button><button class="btn c-yes mw-hover" data-a="yes">✓ Yes</button></div>
- <p class="hint muted">Keys: ← No · → Yes · ↓ or M Maybe · ↑ or L Love</p>`;
+ <p class="hint muted keyhint">Keys: ← No · → Yes · ↓ or M Maybe · ↑ or L Love</p>`;
  app.querySelectorAll(".btn").forEach(x=>x.onclick=()=>act(x.dataset.a));
  const bk=document.getElementById("back");if(bk)bk.onclick=()=>{S.i--;delete S.picks[BRANDS[S.i].name];save();render()};
  drag(document.getElementById("card"));
@@ -151,6 +161,7 @@ function asText(){const {ranked}=summary();let t="Mom's Shopping Profile (Brand 
 function asJSON(){const {ranked}=summary();return JSON.stringify({generated:new Date().toISOString(),scoring:"love=3, yes=2, maybe=1",topCategories:ranked.map((c,i)=>({rank:i+1,category:c.category,score:c.score,love:c.love,yes:c.yes,maybe:c.maybe})),picks:BRANDS.map(b=>({brand:b.name,category:b.category,choice:S.picks[b.name]||null}))},null,2)}
 function dl(name,data,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click()}
 function results(){
+ document.body.classList.remove("swiping");
  const {ranked}=summary();const n=v=>Object.values(S.picks).filter(x=>x===v).length;
  app.innerHTML=`<h1>Your Shopping Profile</h1><p class="muted">${n("love")} Love · ${n("yes")} Yes · ${n("maybe")} Maybe · ${n("no")} No</p>
  <h3 style="margin-top:20px">Top Categories</h3>
