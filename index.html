@@ -65,7 +65,31 @@ footer{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
 footer{background:#FAF8F4;border-top:1px solid var(--mw-border);color:var(--mw-muted-text);text-align:center;font-size:12px;padding:16px;letter-spacing:var(--mw-tracking-label);text-transform:uppercase}
 .toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:#fff;color:var(--mw-foreground);border:1px solid var(--mw-border);box-shadow:0 6px 18px rgba(10,10,10,.12);padding:10px 16px;border-radius:.5rem;opacity:0;transition:opacity .2s;pointer-events:none}
-</style></head><body>
+</style><!--mw-polish--><style id="mw-polish">
+/* MW polish layer: /workspace/ops/brand/app-polish-spec.md (Oct 10, 2026). Light mode, brand motion, 44px targets. */
+:root{--mw-ease:cubic-bezier(.2,.8,.2,1);--mw-dur:180ms;--mw-ink:#171717;--mw-grey:#737373;--mw-line:#E5E5E5;--mw-jungle:#0B6E4F;--mw-lagoon:#05668D;--mw-terra:#C1502E}
+html{color-scheme:light only}
+:where(button,.btn,a.btn,[role=button]){transition:translate var(--mw-dur) var(--mw-ease),scale var(--mw-dur) var(--mw-ease),box-shadow var(--mw-dur) var(--mw-ease),background-color var(--mw-dur) var(--mw-ease)}
+@media (hover:hover){:where(button,.btn,a.btn):not(:disabled):not(.leaflet-container *):hover{translate:0 -1px;scale:1.03;box-shadow:0 6px 18px rgba(10,10,10,.12)}}
+:where(button,.btn):not(:disabled):not(.leaflet-container *):active{scale:.97}
+:where(a:not(.btn)){text-underline-offset:4px}
+:focus-visible{outline:2px solid var(--mw-lagoon);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+.mw-share{min-height:44px;min-width:44px;padding:0 14px;border:2px solid var(--mw-ink);background:#fff;color:var(--mw-ink);font-family:Khand,Hind,system-ui,sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;border-radius:0;cursor:pointer}
+.mw-share-float{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50}
+
+/* Jane's Shopping Quiz: Share button in the header (brand share spec) */
+header .mw-share{margin-left:8px;font-size:12px;padding:0 10px}
+
+</style><script id="mw-share">(function(){function go(){if(document.getElementById('mwShare'))return;var b=document.createElement('button');b.id='mwShare';b.type='button';b.className='mw-share';b.textContent='⇪ Share';b.setAttribute('aria-label','Share this page');
+var host=document.querySelector('header')||document.body;if(host===document.body)b.classList.add('mw-share-float');host.appendChild(b);
+b.addEventListener('click',async function(){var url=location.origin+location.pathname,t=document.title;
+ if(navigator.share){try{await navigator.share({title:t,url:url});return}catch(e){if(e&&e.name==='AbortError')return}}
+ if(/iPhone|iPad|Android/i.test(navigator.userAgent)){location.href='sms:?&body='+encodeURIComponent(t+' '+url);return}
+ try{await navigator.clipboard.writeText(url);b.textContent='Link Copied';setTimeout(function(){b.textContent='⇪ Share'},1800)}catch(e){prompt('Copy this link:',url)}});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();
+</script><!--/mw-polish-->
+</head><body>
 <header><span class="wordmark">MAX WEBERMAN</span><button class="link mw-hover" id="reset">Start Over</button></header>
 <main id="app"></main>
 <footer>Jane's Shopping Quiz</footer>
