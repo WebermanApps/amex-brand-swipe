@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Brand Swipe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600&family=Khand:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--mw-background:#fff;--mw-foreground:#0a0a0a;--mw-primary:#171717;--mw-primary-foreground:#fafafa;--mw-secondary:#f5f5f5;--mw-muted-text:#737373;--mw-border:#e5e5e5;--mw-dark-surface:#0a0a0a;--mw-font-heading:"Khand",sans-serif;--mw-font-body:"Hind",system-ui,sans-serif;--mw-radius:.625rem;--mw-tracking-label:.1em;--mw-ease:cubic-bezier(.2,.8,.2,1);--mw-dur:180ms}
+.mw-hover{transition:transform var(--mw-dur) var(--mw-ease),box-shadow var(--mw-dur) var(--mw-ease),background-color var(--mw-dur) var(--mw-ease),color var(--mw-dur) var(--mw-ease)}
+.mw-hover:hover,.mw-hover:focus-visible{transform:translateY(-1px) scale(1.03);box-shadow:0 6px 18px rgba(10,10,10,.12)}
+.mw-hover:active{transform:scale(.98)}
+@media (prefers-reduced-motion:reduce){.mw-hover,.mw-hover:hover{transition:none;transform:none}}
+*{box-sizing:border-box}html,body{margin:0;background:var(--mw-background);color:var(--mw-foreground);font-family:var(--mw-font-body);-webkit-tap-highlight-color:transparent}
+body{min-height:100dvh;display:flex;flex-direction:column}
+header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--mw-border)}
+.wordmark{font-family:var(--mw-font-heading);font-weight:700;letter-spacing:var(--mw-tracking-label);font-size:14px}
+main{flex:1;max-width:480px;width:100%;margin:0 auto;padding:20px}
+h1,h2,h3{font-family:var(--mw-font-heading);font-weight:700;line-height:1.1;letter-spacing:-.01em;margin:0 0 8px}
+h1{font-size:34px}h2{font-size:26px}h3{font-size:20px}
+.muted{color:var(--mw-muted-text)}
+.progress{display:flex;justify-content:space-between;font-size:13px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);margin:12px 0 6px}
+.bar{height:4px;background:var(--mw-secondary);border-radius:4px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--mw-primary);width:0;transition:width .25s}
+.stack{position:relative;height:380px;margin:20px 0;touch-action:none}
+.card{position:absolute;inset:0;background:#fff;border:1px solid var(--mw-border);border-radius:1rem;box-shadow:0 4px 16px rgba(10,10,10,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;user-select:none;cursor:grab}
+.card .emoji{font-size:72px;line-height:1;margin-bottom:18px}
+.card .cat{font-size:12px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);border:1px solid var(--mw-border);padding:4px 10px;border-radius:999px;margin-bottom:10px}
+.card h2{font-size:36px}.card p{margin:6px 0 0;color:var(--mw-muted-text);font-size:17px}
+.stamp{position:absolute;top:20px;font-family:var(--mw-font-heading);font-size:24px;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);padding:2px 10px;opacity:0;text-transform:uppercase}
+.stamp.like{left:20px}.stamp.skip{right:20px}.stamp.star{left:50%;transform:translateX(-50%);top:auto;bottom:20px}
+.btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.btn{font-family:var(--mw-font-body);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);background:transparent;color:var(--mw-primary);padding:14px 8px;border-radius:0;cursor:pointer}
+.btn:hover{background:var(--mw-primary);color:var(--mw-primary-foreground)}
+.btn.solid{background:var(--mw-primary);color:var(--mw-primary-foreground)}
+.hint{text-align:center;font-size:13px;margin-top:14px}
+.link{background:none;border:0;font:inherit;font-size:12px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);border-bottom:1px solid rgba(10,10,10,.3);cursor:pointer;padding:2px 0}
+.link:hover{color:var(--mw-foreground);border-color:var(--mw-foreground)}
+.rank{border:1px solid var(--mw-border);border-radius:.75rem;padding:14px 16px;margin:10px 0}
+.rank .top{display:flex;justify-content:space-between;align-items:baseline}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chip{background:var(--mw-secondary);border-radius:999px;padding:3px 10px;font-size:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+footer{background:var(--mw-dark-surface);color:rgba(255,255,255,.6);text-align:center;font-size:12px;padding:16px;letter-spacing:var(--mw-tracking-label);text-transform:uppercase}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--mw-primary);color:#fff;padding:10px 16px;border-radius:.5rem;opacity:0;transition:opacity .2s;pointer-events:none}
+</style></head><body>
+<header><span class="wordmark">MAX WEBERMAN</span><button class="link mw-hover" id="reset">Start Over</button></header>
+<main id="app"></main>
+<footer>Brand Swipe · Made For Mom</footer>
+<div class="toast" id="toast"></div>
+<script>
+const BRANDS=[
+["Saks Fifth Avenue","Fashion","👜","Luxury department store for designer fashion."],
+["Nordstrom","Fashion","🧥","Department store with clothing, shoes and great service."],
+["Macy's","Fashion","🛍️","Classic department store for everyday fashion and home."],
+["Lululemon","Fashion","🧘","Athletic and leisure wear built for comfort."],
+["Nike","Fashion","👟","Sneakers and activewear for every sport."],
+["Tory Burch","Fashion","👡","Polished designer bags, shoes and clothing."],
+["Sephora","Beauty","💄","Makeup, skincare and fragrance from top brands."],
+["Ulta Beauty","Beauty","💅","Beauty products plus an in-store salon."],
+["Bluemercury","Beauty","🧴","Boutique luxury skincare and cosmetics."],
+["Whole Foods Market","Groceries","🥑","Natural and organic grocery store."],
+["Costco","Groceries","📦","Warehouse club for bulk groceries and more."],
+["Instacart","Groceries","🛒","Grocery delivery from local stores."],
+["Walmart+","Groceries","🏪","Membership with free delivery from Walmart."],
+["Target","Home","🎯","Everyday essentials, home goods and more."],
+["Home Depot","Home","🔨","Tools, hardware and home improvement."],
+["Lowe's","Home","🪚","Home improvement, appliances and garden."],
+["Wayfair","Home","🛋️","Furniture and home décor delivered."],
+["Williams Sonoma","Home","🍳","Premium cookware and kitchen essentials."],
+["Resy Restaurants","Dining","🍽️","Reservations at popular local restaurants."],
+["Starbucks","Dining","☕","Coffee, tea and a quick bite on the go."],
+["Uber Eats","Dining","🍔","Restaurant delivery to your door."],
+["DoorDash","Dining","🥡","Food and convenience delivery."],
+["Grubhub","Dining","🍕","Takeout and delivery from local spots."],
+["Marriott Bonvoy","Travel","🏨","Hotels and resorts around the world."],
+["Hilton","Travel","🛎️","Hotels from Hampton to Waldorf Astoria."],
+["Fine Hotels + Resorts","Travel","🌴","Luxury hotel stays with extra perks."],
+["Delta Air Lines","Travel","✈️","Major airline with flights worldwide."],
+["Expedia","Travel","🧳","Book flights, hotels and cars in one place."],
+["Uber","Travel","🚗","Rides around town, anytime."],
+["Hertz","Travel","🚙","Rental cars at airports and in town."],
+["CLEAR","Travel","🛂","Faster airport security with ID scanning."],
+["Disney+","Streaming","🏰","Disney, Pixar, Marvel and Star Wars shows."],
+["Hulu","Streaming","📺","TV shows, movies and next-day episodes."],
+["Peacock","Streaming","🦚","NBC shows, movies, news and sports."],
+["The New York Times","Streaming","📰","News, cooking and games subscription."],
+["Equinox","Fitness","🏋️","Upscale gyms and fitness classes."],
+["SoulCycle","Fitness","🚴","High-energy indoor cycling classes."],
+["Peloton","Fitness","🚲","At-home bikes and streamed workouts."],
+["Apple","Electronics","🍎","iPhone, iPad, Mac and accessories."],
+["Best Buy","Electronics","🔌","TVs, computers, appliances and gadgets."],
+["Dell","Electronics","💻","Laptops, desktops and monitors."],
+["Amazon","Electronics","📦","Shop almost anything, delivered fast."],
+["CVS","Pharmacy","💊","Pharmacy, health and everyday essentials."],
+["Walgreens","Pharmacy","🩺","Pharmacy, vitamins and convenience items."],
+["Chewy","Pets","🐶","Pet food, supplies and pharmacy delivered."],
+["Petco","Pets","🐱","Pet supplies, grooming and vet care."],
+["BarkBox","Pets","🦴","Monthly box of dog toys and treats."],
+["Carter's","Kids","👶","Baby and kids' clothing basics."],
+["Pottery Barn Kids","Kids","🧸","Kids' furniture, bedding and décor."],
+["LEGO","Kids","🧱","Building sets for kids of all ages."]
+].map(([name,category,emoji,desc])=>({name,category,emoji,desc}));
+const KEY="mw-amex-brand-swipe-v1";
+let S=JSON.parse(localStorage.getItem(KEY)||"null")||{i:0,picks:{}};
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+const app=document.getElementById("app");
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.style.opacity=1;setTimeout(()=>e.style.opacity=0,1600)}
+function render(){S.i>=BRANDS.length?results():cardView()}
+function cardView(){
+ const b=BRANDS[S.i];
+ app.innerHTML=`<h1>Which Brands Do You Love?</h1><p class="muted">Swipe right to like, left to skip, up if you use it often.</p>
+ <div class="progress"><span>${S.i+1}/${BRANDS.length}</span><button class="link mw-hover" id="back" ${S.i?"":"hidden"}>Undo</button></div><div class="bar"><i style="width:${S.i/BRANDS.length*100}%"></i></div>
+ <div class="stack"><div class="card mw-hover" id="card"><span class="stamp like">Like</span><span class="stamp skip">Skip</span><span class="stamp star">Use Often</span>
+ <div class="emoji">${b.emoji}</div><div class="cat">${b.category}</div><h2>${b.name}</h2><p>${b.desc}</p></div></div>
+ <div class="btns"><button class="btn mw-hover" data-a="skip">✕ Skip</button><button class="btn mw-hover" data-a="often">★ Often</button><button class="btn solid mw-hover" data-a="like">♥ Like</button></div>
+ <p class="hint muted">Tip: arrow keys work too.</p>`;
+ app.querySelectorAll(".btn").forEach(x=>x.onclick=()=>act(x.dataset.a));
+ const bk=document.getElementById("back");if(bk)bk.onclick=()=>{S.i--;delete S.picks[BRANDS[S.i].name];save();render()};
+ drag(document.getElementById("card"));
+}
+function act(a,dx=0,dy=0){
+ const c=document.getElementById("card");const b=BRANDS[S.i];S.picks[b.name]=a;S.i++;save();
+ const tx=a==="like"?600:a==="skip"?-600:0,ty=a==="often"?-700:0;
+ c.style.transition="transform .25s ease-out,opacity .25s";c.style.transform=`translate(${tx||dx}px,${ty||dy}px) rotate(${tx/30}deg)`;c.style.opacity=0;
+ setTimeout(render,230);
+}
+function drag(c){let sx,sy,on=false;
+ c.onpointerdown=e=>{on=true;sx=e.clientX;sy=e.clientY;c.setPointerCapture(e.pointerId);c.style.transition="none"};
+ c.onpointermove=e=>{if(!on)return;const dx=e.clientX-sx,dy=e.clientY-sy;c.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/20}deg)`;
+  const up=dy<-40&&Math.abs(dy)>Math.abs(dx);c.querySelector(".like").style.opacity=!up&&dx>0?Math.min(dx/100,1):0;c.querySelector(".skip").style.opacity=!up&&dx<0?Math.min(-dx/100,1):0;c.querySelector(".star").style.opacity=up?Math.min(-dy/100,1):0};
+ c.onpointerup=c.onpointercancel=e=>{if(!on)return;on=false;const dx=e.clientX-sx,dy=e.clientY-sy;
+  if(dy<-100&&Math.abs(dy)>Math.abs(dx))act("often");else if(dx>100)act("like");else if(dx<-100)act("skip");
+  else{c.style.transition="transform .2s ease-out";c.style.transform="";c.querySelectorAll(".stamp").forEach(s=>s.style.opacity=0)}};
+}
+document.onkeydown=e=>{if(S.i>=BRANDS.length||!document.getElementById("card"))return;({ArrowRight:"like",ArrowLeft:"skip",ArrowUp:"often"})[e.key]&&act({ArrowRight:"like",ArrowLeft:"skip",ArrowUp:"often"}[e.key])};
+function summary(){
+ const cats={};BRANDS.forEach(b=>{cats[b.category]??={category:b.category,often:[],liked:[],skipped:[],total:0};const p=S.picks[b.name],c=cats[b.category];c.total++;
+  p==="often"?c.often.push(b.name):p==="like"?c.liked.push(b.name):c.skipped.push(b.name)});
+ const ranked=Object.values(cats).map(c=>({...c,score:c.often.length*2+c.liked.length})).filter(c=>c.score>0).sort((a,b)=>b.score-a.score||b.often.length-a.often.length);
+ return{ranked,all:cats};
+}
+function asText(){const {ranked}=summary();let t="Mom's Shopping Profile (Brand Swipe)\nScore: Use Often = 2, Like = 1\n\n";
+ ranked.forEach((c,i)=>{t+=`${i+1}. ${c.category} (score ${c.score})\n`;if(c.often.length)t+=`   ★ Use Often: ${c.often.join(", ")}\n`;if(c.liked.length)t+=`   ♥ Like: ${c.liked.join(", ")}\n`});
+ const sk=BRANDS.filter(b=>S.picks[b.name]==="skip").map(b=>b.name);t+=`\nSkipped: ${sk.join(", ")||"None"}\n`;return t}
+function asJSON(){const {ranked}=summary();return JSON.stringify({generated:new Date().toISOString(),scoring:"often=2, like=1",topCategories:ranked.map((c,i)=>({rank:i+1,category:c.category,score:c.score,useOften:c.often,liked:c.liked})),picks:BRANDS.map(b=>({brand:b.name,category:b.category,choice:S.picks[b.name]||null}))},null,2)}
+function dl(name,data,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click()}
+function results(){
+ const {ranked}=summary();const n=v=>Object.values(S.picks).filter(x=>x===v).length;
+ app.innerHTML=`<h1>Your Shopping Profile</h1><p class="muted">${n("often")} Use Often · ${n("like")} Liked · ${n("skip")} Skipped</p>
+ <h3 style="margin-top:20px">Top Categories</h3>
+ ${ranked.length?ranked.map((c,i)=>`<div class="rank mw-hover"><div class="top"><h3>${i+1}. ${c.category}</h3><span class="muted">${c.often.length+c.liked.length}/${c.total}</span></div>
+ <div class="chips">${c.often.map(x=>`<span class="chip">★ ${x}</span>`).join("")}${c.liked.map(x=>`<span class="chip">♥ ${x}</span>`).join("")}</div></div>`).join(""):`<p class="muted">No picks yet.</p>`}
+ <div class="row"><button class="btn solid mw-hover" id="copy">Copy Results</button><button class="btn mw-hover" id="json">Download JSON</button></div>
+ <div class="row" style="margin-top:0"><button class="btn mw-hover" id="txt">Download Text</button><button class="btn mw-hover" id="again">Start Over</button></div>
+ <p class="hint muted">Send the copied results or file to Max.</p>`;
+ document.getElementById("copy").onclick=async()=>{try{await navigator.clipboard.writeText(asText());toast("Copied!")}catch{const t=document.createElement("textarea");t.value=asText();document.body.append(t);t.select();document.execCommand("copy");t.remove();toast("Copied!")}};
+ document.getElementById("json").onclick=()=>dl("mom-shopping-profile.json",asJSON(),"application/json");
+ document.getElementById("txt").onclick=()=>dl("mom-shopping-profile.txt",asText(),"text/plain");
+ document.getElementById("again").onclick=reset;
+}
+function reset(){if(confirm("Start over and clear all picks?")){S={i:0,picks:{}};save();render()}}
+document.getElementById("reset").onclick=reset;
+render();
+</script></body></html>
