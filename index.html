@@ -26,9 +26,9 @@ h1{font-size:34px}h2{font-size:26px}h3{font-size:20px}
 .card .cat{font-size:12px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);border:1px solid var(--mw-border);padding:4px 10px;border-radius:999px;margin-bottom:10px}
 .card h2{font-size:36px}.card p{margin:6px 0 0;color:var(--mw-muted-text);font-size:17px}
 .stamp{position:absolute;top:20px;font-family:var(--mw-font-heading);font-size:24px;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);padding:2px 10px;opacity:0;text-transform:uppercase}
-.stamp.like{left:20px}.stamp.skip{right:20px}.stamp.star{left:50%;transform:translateX(-50%);top:auto;bottom:20px}
-.btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.btn{font-family:var(--mw-font-body);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);background:transparent;color:var(--mw-primary);padding:14px 8px;border-radius:0;cursor:pointer}
+.stamp.like{left:20px}.stamp.skip{right:20px}
+.btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.btn{font-family:var(--mw-font-body);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);background:transparent;color:var(--mw-primary);padding:14px 4px;border-radius:0;cursor:pointer}
 .btn:hover{background:var(--mw-primary);color:var(--mw-primary-foreground)}
 .btn.solid{background:var(--mw-primary);color:var(--mw-primary-foreground)}
 .hint{text-align:center;font-size:13px;margin-top:14px}
@@ -98,7 +98,7 @@ const BRANDS=[
 ["Pottery Barn Kids","Kids","🧸","Kids' furniture, bedding and décor."],
 ["LEGO","Kids","🧱","Building sets for kids of all ages."]
 ].map(([name,category,emoji,desc])=>({name,category,emoji,desc}));
-const KEY="mw-amex-brand-swipe-v1";
+const KEY="mw-amex-brand-swipe-v2";
 let S=JSON.parse(localStorage.getItem(KEY)||"null")||{i:0,picks:{}};
 const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
 const app=document.getElementById("app");
@@ -106,48 +106,48 @@ function toast(t){const e=document.getElementById("toast");e.textContent=t;e.sty
 function render(){S.i>=BRANDS.length?results():cardView()}
 function cardView(){
  const b=BRANDS[S.i];
- app.innerHTML=`<h1>Which Brands Do You Love?</h1><p class="muted">Swipe right to like, left to skip, up if you use it often.</p>
+ app.innerHTML=`<h1>Which Brands Do You Love?</h1><p class="muted">Swipe right for Yes, left for No. Or tap Maybe or Love.</p>
  <div class="progress"><span>${S.i+1}/${BRANDS.length}</span><button class="link mw-hover" id="back" ${S.i?"":"hidden"}>Undo</button></div><div class="bar"><i style="width:${S.i/BRANDS.length*100}%"></i></div>
- <div class="stack"><div class="card mw-hover" id="card"><span class="stamp like">Like</span><span class="stamp skip">Skip</span><span class="stamp star">Use Often</span>
+ <div class="stack"><div class="card mw-hover" id="card"><span class="stamp like">Yes</span><span class="stamp skip">No</span>
  <div class="emoji">${b.emoji}</div><div class="cat">${b.category}</div><h2>${b.name}</h2><p>${b.desc}</p></div></div>
- <div class="btns"><button class="btn mw-hover" data-a="skip">✕ Skip</button><button class="btn mw-hover" data-a="often">★ Often</button><button class="btn solid mw-hover" data-a="like">♥ Like</button></div>
- <p class="hint muted">Tip: arrow keys work too.</p>`;
+ <div class="btns"><button class="btn mw-hover" data-a="no">✕ No</button><button class="btn mw-hover" data-a="maybe">? Maybe</button><button class="btn mw-hover" data-a="love">♥ Love</button><button class="btn solid mw-hover" data-a="yes">✓ Yes</button></div>
+ <p class="hint muted">Keys: ← No · → Yes · ↓ or M Maybe · ↑ or L Love</p>`;
  app.querySelectorAll(".btn").forEach(x=>x.onclick=()=>act(x.dataset.a));
  const bk=document.getElementById("back");if(bk)bk.onclick=()=>{S.i--;delete S.picks[BRANDS[S.i].name];save();render()};
  drag(document.getElementById("card"));
 }
 function act(a,dx=0,dy=0){
  const c=document.getElementById("card");const b=BRANDS[S.i];S.picks[b.name]=a;S.i++;save();
- const tx=a==="like"?600:a==="skip"?-600:0,ty=a==="often"?-700:0;
+ const tx=a==="yes"?600:a==="no"?-600:0,ty=a==="love"?-700:a==="maybe"?700:0;
  c.style.transition="transform .25s ease-out,opacity .25s";c.style.transform=`translate(${tx||dx}px,${ty||dy}px) rotate(${tx/30}deg)`;c.style.opacity=0;
  setTimeout(render,230);
 }
 function drag(c){let sx,sy,on=false;
  c.onpointerdown=e=>{on=true;sx=e.clientX;sy=e.clientY;c.setPointerCapture(e.pointerId);c.style.transition="none"};
  c.onpointermove=e=>{if(!on)return;const dx=e.clientX-sx,dy=e.clientY-sy;c.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/20}deg)`;
-  const up=dy<-40&&Math.abs(dy)>Math.abs(dx);c.querySelector(".like").style.opacity=!up&&dx>0?Math.min(dx/100,1):0;c.querySelector(".skip").style.opacity=!up&&dx<0?Math.min(-dx/100,1):0;c.querySelector(".star").style.opacity=up?Math.min(-dy/100,1):0};
+  c.querySelector(".like").style.opacity=dx>0?Math.min(dx/100,1):0;c.querySelector(".skip").style.opacity=dx<0?Math.min(-dx/100,1):0};
  c.onpointerup=c.onpointercancel=e=>{if(!on)return;on=false;const dx=e.clientX-sx,dy=e.clientY-sy;
-  if(dy<-100&&Math.abs(dy)>Math.abs(dx))act("often");else if(dx>100)act("like");else if(dx<-100)act("skip");
+  if(dx>100)act("yes");else if(dx<-100)act("no");
   else{c.style.transition="transform .2s ease-out";c.style.transform="";c.querySelectorAll(".stamp").forEach(s=>s.style.opacity=0)}};
 }
-document.onkeydown=e=>{if(S.i>=BRANDS.length||!document.getElementById("card"))return;({ArrowRight:"like",ArrowLeft:"skip",ArrowUp:"often"})[e.key]&&act({ArrowRight:"like",ArrowLeft:"skip",ArrowUp:"often"}[e.key])};
+document.onkeydown=e=>{if(S.i>=BRANDS.length||!document.getElementById("card"))return;const k={ArrowRight:"yes",ArrowLeft:"no",ArrowDown:"maybe",ArrowUp:"love",m:"maybe",M:"maybe",l:"love",L:"love"}[e.key];if(k){e.preventDefault();act(k)}};
 function summary(){
- const cats={};BRANDS.forEach(b=>{cats[b.category]??={category:b.category,often:[],liked:[],skipped:[],total:0};const p=S.picks[b.name],c=cats[b.category];c.total++;
-  p==="often"?c.often.push(b.name):p==="like"?c.liked.push(b.name):c.skipped.push(b.name)});
- const ranked=Object.values(cats).map(c=>({...c,score:c.often.length*2+c.liked.length})).filter(c=>c.score>0).sort((a,b)=>b.score-a.score||b.often.length-a.often.length);
+ const cats={};BRANDS.forEach(b=>{cats[b.category]??={category:b.category,love:[],yes:[],maybe:[],no:[],total:0};const p=S.picks[b.name],c=cats[b.category];c.total++;
+  (c[p]||c.no).push(b.name)});
+ const ranked=Object.values(cats).map(c=>({...c,score:c.love.length*3+c.yes.length*2+c.maybe.length})).filter(c=>c.score>0).sort((a,b)=>b.score-a.score||b.love.length-a.love.length||b.yes.length-a.yes.length);
  return{ranked,all:cats};
 }
-function asText(){const {ranked}=summary();let t="Mom's Shopping Profile (Brand Swipe)\nScore: Use Often = 2, Like = 1\n\n";
- ranked.forEach((c,i)=>{t+=`${i+1}. ${c.category} (score ${c.score})\n`;if(c.often.length)t+=`   ★ Use Often: ${c.often.join(", ")}\n`;if(c.liked.length)t+=`   ♥ Like: ${c.liked.join(", ")}\n`});
- const sk=BRANDS.filter(b=>S.picks[b.name]==="skip").map(b=>b.name);t+=`\nSkipped: ${sk.join(", ")||"None"}\n`;return t}
-function asJSON(){const {ranked}=summary();return JSON.stringify({generated:new Date().toISOString(),scoring:"often=2, like=1",topCategories:ranked.map((c,i)=>({rank:i+1,category:c.category,score:c.score,useOften:c.often,liked:c.liked})),picks:BRANDS.map(b=>({brand:b.name,category:b.category,choice:S.picks[b.name]||null}))},null,2)}
+function asText(){const {ranked}=summary();let t="Mom's Shopping Profile (Brand Swipe)\nScore: Love = 3, Yes = 2, Maybe = 1\n\n";
+ ranked.forEach((c,i)=>{t+=`${i+1}. ${c.category} (score ${c.score})\n`;if(c.love.length)t+=`   ♥ Love: ${c.love.join(", ")}\n`;if(c.yes.length)t+=`   ✓ Yes: ${c.yes.join(", ")}\n`;if(c.maybe.length)t+=`   ? Maybe: ${c.maybe.join(", ")}\n`});
+ const sk=BRANDS.filter(b=>S.picks[b.name]==="no").map(b=>b.name);t+=`\nNo: ${sk.join(", ")||"None"}\n`;return t}
+function asJSON(){const {ranked}=summary();return JSON.stringify({generated:new Date().toISOString(),scoring:"love=3, yes=2, maybe=1",topCategories:ranked.map((c,i)=>({rank:i+1,category:c.category,score:c.score,love:c.love,yes:c.yes,maybe:c.maybe})),picks:BRANDS.map(b=>({brand:b.name,category:b.category,choice:S.picks[b.name]||null}))},null,2)}
 function dl(name,data,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click()}
 function results(){
  const {ranked}=summary();const n=v=>Object.values(S.picks).filter(x=>x===v).length;
- app.innerHTML=`<h1>Your Shopping Profile</h1><p class="muted">${n("often")} Use Often · ${n("like")} Liked · ${n("skip")} Skipped</p>
+ app.innerHTML=`<h1>Your Shopping Profile</h1><p class="muted">${n("love")} Love · ${n("yes")} Yes · ${n("maybe")} Maybe · ${n("no")} No</p>
  <h3 style="margin-top:20px">Top Categories</h3>
- ${ranked.length?ranked.map((c,i)=>`<div class="rank mw-hover"><div class="top"><h3>${i+1}. ${c.category}</h3><span class="muted">${c.often.length+c.liked.length}/${c.total}</span></div>
- <div class="chips">${c.often.map(x=>`<span class="chip">★ ${x}</span>`).join("")}${c.liked.map(x=>`<span class="chip">♥ ${x}</span>`).join("")}</div></div>`).join(""):`<p class="muted">No picks yet.</p>`}
+ ${ranked.length?ranked.map((c,i)=>`<div class="rank mw-hover"><div class="top"><h3>${i+1}. ${c.category}</h3><span class="muted">Score ${c.score}</span></div>
+ ${[["love","♥ Love"],["yes","✓ Yes"],["maybe","? Maybe"]].filter(([k])=>c[k].length).map(([k,l])=>`<div class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;margin-top:8px">${l}</div><div class="chips" style="margin-top:4px">${c[k].map(x=>`<span class="chip">${x}</span>`).join("")}</div>`).join("")}</div>`).join(""):`<p class="muted">No picks yet.</p>`}
  <div class="row"><button class="btn solid mw-hover" id="copy">Copy Results</button><button class="btn mw-hover" id="json">Download JSON</button></div>
  <div class="row" style="margin-top:0"><button class="btn mw-hover" id="txt">Download Text</button><button class="btn mw-hover" id="again">Start Over</button></div>
  <p class="hint muted">Send the copied results or file to Max.</p>`;
