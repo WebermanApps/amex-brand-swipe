@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600&family=Khand:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{--mw-background:#fff;--mw-foreground:#0a0a0a;--mw-primary:#171717;--mw-primary-foreground:#fafafa;--mw-secondary:#f5f5f5;--mw-muted-text:#737373;--mw-border:#e5e5e5;--mw-dark-surface:#0a0a0a;--mw-font-heading:"Khand",sans-serif;--mw-font-body:"Hind",system-ui,sans-serif;--mw-radius:.625rem;--mw-tracking-label:.1em;--mw-ease:cubic-bezier(.2,.8,.2,1);--mw-dur:180ms}
+:root{--mw-background:#fff;--mw-foreground:#0a0a0a;--mw-primary:#171717;--mw-primary-foreground:#fafafa;--mw-secondary:#f5f5f5;--mw-muted-text:#737373;--mw-border:#e5e5e5;--mw-dark-surface:#0a0a0a;--mw-font-heading:"Khand",sans-serif;--mw-font-body:"Hind",system-ui,sans-serif;--mw-radius:.625rem;--mw-tracking-label:.1em;--c-love:#E0245E;--c-yes:#2E9E6A;--c-maybe:#D99A1E;--c-no:#9A7B7B;--mw-ease:cubic-bezier(.2,.8,.2,1);--mw-dur:180ms}
 .mw-hover{transition:transform var(--mw-dur) var(--mw-ease),box-shadow var(--mw-dur) var(--mw-ease),background-color var(--mw-dur) var(--mw-ease),color var(--mw-dur) var(--mw-ease)}
 .mw-hover:hover,.mw-hover:focus-visible{transform:translateY(-1px) scale(1.03);box-shadow:0 6px 18px rgba(10,10,10,.12)}
 .mw-hover:active{transform:scale(.98)}
@@ -19,14 +19,21 @@ h1,h2,h3{font-family:var(--mw-font-heading);font-weight:700;line-height:1.1;lett
 h1{font-size:34px}h2{font-size:26px}h3{font-size:20px}
 .muted{color:var(--mw-muted-text)}
 .progress{display:flex;justify-content:space-between;font-size:13px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);margin:12px 0 6px}
-.bar{height:4px;background:var(--mw-secondary);border-radius:4px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--mw-primary);width:0;transition:width .25s}
+.bar{height:4px;background:var(--mw-secondary);border-radius:4px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--c-yes),var(--c-maybe),var(--c-love));opacity:.75;width:0;transition:width .25s}
 .stack{position:relative;height:380px;margin:20px 0;touch-action:none}
 .card{position:absolute;inset:0;background:#fff;border:1px solid var(--mw-border);border-radius:1rem;box-shadow:0 4px 16px rgba(10,10,10,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;user-select:none;cursor:grab}
 .card .emoji{font-size:72px;line-height:1;margin-bottom:18px}
 .card .cat{font-size:12px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);border:1px solid var(--mw-border);padding:4px 10px;border-radius:999px;margin-bottom:10px}
 .card h2{font-size:36px}.card p{margin:6px 0 0;color:var(--mw-muted-text);font-size:17px}
 .stamp{position:absolute;top:20px;font-family:var(--mw-font-heading);font-size:24px;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);padding:2px 10px;opacity:0;text-transform:uppercase}
-.stamp.like{left:20px}.stamp.skip{right:20px}
+.stamp.like{left:20px;color:var(--c-yes);border-color:var(--c-yes)}.stamp.skip{right:20px;color:var(--c-no);border-color:var(--c-no)}
+.btn.c-no{border-color:var(--c-no);color:var(--c-no)}.btn.c-no:hover{background:var(--c-no);color:#fff}
+.btn.c-maybe{border-color:var(--c-maybe);color:#a36f0c}.btn.c-maybe:hover{background:var(--c-maybe);color:#fff}
+.btn.c-love{border-color:var(--c-love);color:var(--c-love)}.btn.c-love:hover{background:var(--c-love);color:#fff}
+.btn.c-yes{border-color:var(--c-yes);background:var(--c-yes);color:#fff}.btn.c-yes:hover{background:#25875a;border-color:#25875a}
+.lbl-love{color:var(--c-love)}.lbl-yes{color:var(--c-yes)}.lbl-maybe{color:#a36f0c}
+.chip.love{background:#fde8ef}.chip.yes{background:#e6f4ec}.chip.maybe{background:#fbf1dc}
+.card .cat{background:var(--cat-bg,transparent)}
 .btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .btn{font-family:var(--mw-font-body);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);background:transparent;color:var(--mw-primary);padding:14px 4px;border-radius:0;cursor:pointer}
 .btn:hover{background:var(--mw-primary);color:var(--mw-primary-foreground)}
@@ -98,6 +105,7 @@ const BRANDS=[
 ["Pottery Barn Kids","Kids","🧸","Kids' furniture, bedding and décor."],
 ["LEGO","Kids","🧱","Building sets for kids of all ages."]
 ].map(([name,category,emoji,desc])=>({name,category,emoji,desc}));
+const CATC={Fashion:"#f6eef6",Beauty:"#fdeef2",Groceries:"#edf6ec",Home:"#f4efe7",Dining:"#fdf1e6",Travel:"#eaf2f8",Streaming:"#efedf8",Fitness:"#e9f6f3",Electronics:"#eef0f3",Pharmacy:"#eef6f6",Pets:"#f8f2e6",Kids:"#fbf6dd"};
 const KEY="mw-amex-brand-swipe-v2";
 let S=JSON.parse(localStorage.getItem(KEY)||"null")||{i:0,picks:{}};
 const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
@@ -109,8 +117,8 @@ function cardView(){
  app.innerHTML=`<h1>Which Brands Do You Love?</h1><p class="muted">Swipe right for Yes, left for No. Or tap Maybe or Love.</p>
  <div class="progress"><span>${S.i+1}/${BRANDS.length}</span><button class="link mw-hover" id="back" ${S.i?"":"hidden"}>Undo</button></div><div class="bar"><i style="width:${S.i/BRANDS.length*100}%"></i></div>
  <div class="stack"><div class="card mw-hover" id="card"><span class="stamp like">Yes</span><span class="stamp skip">No</span>
- <div class="emoji">${b.emoji}</div><div class="cat">${b.category}</div><h2>${b.name}</h2><p>${b.desc}</p></div></div>
- <div class="btns"><button class="btn mw-hover" data-a="no">✕ No</button><button class="btn mw-hover" data-a="maybe">? Maybe</button><button class="btn mw-hover" data-a="love">♥ Love</button><button class="btn solid mw-hover" data-a="yes">✓ Yes</button></div>
+ <div class="emoji">${b.emoji}</div><div class="cat" style="--cat-bg:${CATC[b.category]||"transparent"}">${b.category}</div><h2>${b.name}</h2><p>${b.desc}</p></div></div>
+ <div class="btns"><button class="btn c-no mw-hover" data-a="no">✕ No</button><button class="btn c-maybe mw-hover" data-a="maybe">? Maybe</button><button class="btn c-love mw-hover" data-a="love">♥ Love</button><button class="btn c-yes mw-hover" data-a="yes">✓ Yes</button></div>
  <p class="hint muted">Keys: ← No · → Yes · ↓ or M Maybe · ↑ or L Love</p>`;
  app.querySelectorAll(".btn").forEach(x=>x.onclick=()=>act(x.dataset.a));
  const bk=document.getElementById("back");if(bk)bk.onclick=()=>{S.i--;delete S.picks[BRANDS[S.i].name];save();render()};
@@ -146,8 +154,8 @@ function results(){
  const {ranked}=summary();const n=v=>Object.values(S.picks).filter(x=>x===v).length;
  app.innerHTML=`<h1>Your Shopping Profile</h1><p class="muted">${n("love")} Love · ${n("yes")} Yes · ${n("maybe")} Maybe · ${n("no")} No</p>
  <h3 style="margin-top:20px">Top Categories</h3>
- ${ranked.length?ranked.map((c,i)=>`<div class="rank mw-hover"><div class="top"><h3>${i+1}. ${c.category}</h3><span class="muted">Score ${c.score}</span></div>
- ${[["love","♥ Love"],["yes","✓ Yes"],["maybe","? Maybe"]].filter(([k])=>c[k].length).map(([k,l])=>`<div class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;margin-top:8px">${l}</div><div class="chips" style="margin-top:4px">${c[k].map(x=>`<span class="chip">${x}</span>`).join("")}</div>`).join("")}</div>`).join(""):`<p class="muted">No picks yet.</p>`}
+ ${ranked.length?ranked.map((c,i)=>`<div class="rank mw-hover"><div class="top"><h3><span class="chip" style="background:${CATC[c.category]};font-size:inherit;padding:0 10px">${i+1}. ${c.category}</span></h3><span class="muted">Score ${c.score}</span></div>
+ ${[["love","♥ Love"],["yes","✓ Yes"],["maybe","? Maybe"]].filter(([k])=>c[k].length).map(([k,l])=>`<div class="lbl-${k}" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-top:8px">${l}</div><div class="chips" style="margin-top:4px">${c[k].map(x=>`<span class="chip ${k}">${x}</span>`).join("")}</div>`).join("")}</div>`).join(""):`<p class="muted">No picks yet.</p>`}
  <div class="row"><button class="btn solid mw-hover" id="copy">Copy Results</button><button class="btn mw-hover" id="json">Download JSON</button></div>
  <div class="row" style="margin-top:0"><button class="btn mw-hover" id="txt">Download Text</button><button class="btn mw-hover" id="again">Start Over</button></div>
  <p class="hint muted">Send the copied results or file to Max.</p>`;
