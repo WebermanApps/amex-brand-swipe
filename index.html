@@ -13,7 +13,7 @@
 @media (prefers-reduced-motion:reduce){.mw-hover,.mw-hover:hover{transition:none;transform:none}}
 *{box-sizing:border-box}html,body{margin:0;background:var(--mw-background);color:var(--mw-foreground);font-family:var(--mw-font-body);-webkit-tap-highlight-color:transparent}
 body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden;-webkit-text-size-adjust:100%}
-body.swiping{height:100vh;height:100dvh;overflow:hidden;overscroll-behavior:none}
+body.swiping{height:100vh;height:100dvh;overflow:hidden}
 body.swiping footer{display:none}
 body.swiping main{display:flex;flex-direction:column;min-height:0}
 header{padding:calc(10px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--mw-border)}
@@ -102,6 +102,7 @@ window.MW_SUBMIT=async function(app,payload){
  const r=await fetch("https://ntfy.sh/miles-agent-sub-dbd28e3e58043ca06dd2",{method:"POST",body:body});
  if(!r.ok)throw new Error("HTTP "+r.status);return rec};
 </script>
+<script src="ptr.js" defer></script>
 </head><body>
 <header><span class="wordmark">MAX WEBERMAN</span><button class="link mw-hover" id="reset">Start Over</button></header>
 <main id="app"></main>
@@ -180,6 +181,7 @@ function cardView(){
  app.querySelectorAll(".btn").forEach(x=>x.onclick=()=>act(x.dataset.a));
  const bk=document.getElementById("back");if(bk)bk.onclick=()=>{S.i--;delete S.picks[BRANDS[S.i].name];save();render()};
  drag(document.getElementById("card"));
+ {const nt=document.getElementById("note");if(nt)nt.oninput=()=>{S.notes=S.notes||{};const v=nt.value.trim();if(v)S.notes[b.name]=v;else delete S.notes[b.name];save()}}
  clearTimeout(idleT);if(S.i===0)setTimeout(showHint,150);else armIdle();
 }
 let idleT;const IDLE=5000;
