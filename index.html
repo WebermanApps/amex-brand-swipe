@@ -28,7 +28,11 @@ p{font-size:16px}h2{font-size:26px}h3{font-size:20px}
 .stack{position:relative;flex:1;min-height:240px;max-height:440px;margin:14px 0;touch-action:none}
 .card{position:absolute;inset:0;background:#fff;border:1px solid var(--mw-border);border-radius:1rem;box-shadow:0 4px 16px rgba(10,10,10,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;user-select:none;cursor:grab}
 .card{touch-action:none;padding:20px}
-.card .emoji{font-size:clamp(52px,16vw,72px);line-height:1;margin-bottom:18px}
+.card .mono{width:clamp(64px,18vw,84px);height:clamp(64px,18vw,84px);border-radius:50%;border:2px solid var(--mw-border);display:flex;align-items:center;justify-content:center;font-family:var(--mw-font-heading);font-weight:700;font-size:clamp(26px,8vw,34px);margin:0 auto 18px;color:#171717;background:#fff}
+.note{display:block;width:100%;max-width:420px;margin:12px auto 0;min-height:44px;padding:10px 12px;border:1px solid var(--mw-border);border-radius:10px;font:16px var(--mw-font-body);resize:vertical;background:#fff}
+.submitbox{margin:22px 0 6px;padding:18px;border:2px solid #171717;border-radius:14px;background:#fff;text-align:center}
+.btn.submit{width:100%;min-height:60px;font-size:18px}
+.sent{margin-top:10px;font-weight:600;color:#1F7A50}.sent.err{color:#b42318}
 .card .cat{font-size:12px;text-transform:uppercase;letter-spacing:var(--mw-tracking-label);color:var(--mw-muted-text);border:1px solid var(--mw-border);padding:4px 10px;border-radius:999px;margin-bottom:10px}
 .card h2{font-size:clamp(28px,8.5vw,36px)}.card p{margin:6px 0 0;color:var(--mw-muted-text);font-size:17px}
 .stamp{position:absolute;top:20px;font-family:var(--mw-font-heading);font-size:24px;letter-spacing:var(--mw-tracking-label);border:2px solid var(--mw-primary);padding:2px 10px;opacity:0;text-transform:uppercase}
@@ -89,63 +93,71 @@ b.addEventListener('click',async function(){var url=location.origin+location.pat
  try{await navigator.clipboard.writeText(url);b.textContent='Link Copied';setTimeout(function(){b.textContent='⇪ Share'},1800)}catch(e){prompt('Copy this link:',url)}});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();
 </script><!--/mw-polish-->
+<script id="mw-submit">/* Submit to owning agent (Miles Agent). Relay: ntfy.sh topic, archived on the box by /workspace/miles/submissions/collect.py */
+window.MW_SUBMIT=async function(app,payload){
+ const rec={app:app,owner:"Miles Agent",submittedAt:new Date().toISOString(),page:location.href.split("#")[0],ua:navigator.userAgent,results:payload};
+ const body=JSON.stringify(rec);
+ try{const k="mw-submit-backup:"+app,a=JSON.parse(localStorage.getItem(k)||"[]");a.push(rec);localStorage.setItem(k,JSON.stringify(a.slice(-20)))}catch(e){}
+ const r=await fetch("https://ntfy.sh/miles-agent-sub-dbd28e3e58043ca06dd2",{method:"POST",body:body});
+ if(!r.ok)throw new Error("HTTP "+r.status);return rec};
+</script>
 </head><body>
 <header><span class="wordmark">MAX WEBERMAN</span><button class="link mw-hover" id="reset">Start Over</button></header>
 <main id="app"></main>
-<footer>Mom's Shopping Quiz</footer>
+<footer>Mom's Shopping Quiz · Built by <a href="https://maxweberman.com" target="_blank" rel="noopener" style="color:inherit">Max Weberman</a></footer>
 <div class="toast" id="toast"></div>
 <script>
 const BRANDS=[
-["Saks Fifth Avenue","Fashion","👜","Luxury department store for designer fashion."],
-["Nordstrom","Fashion","🧥","Department store with clothing, shoes and great service."],
-["Macy's","Fashion","🛍️","Classic department store for everyday fashion and home."],
-["Lululemon","Fashion","🧘","Athletic and leisure wear built for comfort."],
-["Nike","Fashion","👟","Sneakers and activewear for every sport."],
-["Tory Burch","Fashion","👡","Polished designer bags, shoes and clothing."],
-["Sephora","Beauty","💄","Makeup, skincare and fragrance from top brands."],
-["Ulta Beauty","Beauty","💅","Beauty products plus an in-store salon."],
-["Bluemercury","Beauty","🧴","Boutique luxury skincare and cosmetics."],
-["Whole Foods Market","Groceries","🥑","Natural and organic grocery store."],
-["Costco","Groceries","📦","Warehouse club for bulk groceries and more."],
-["Instacart","Groceries","🛒","Grocery delivery from local stores."],
-["Walmart+","Groceries","🏪","Membership with free delivery from Walmart."],
-["Target","Home","🎯","Everyday essentials, home goods and more."],
-["Home Depot","Home","🔨","Tools, hardware and home improvement."],
-["Lowe's","Home","🪚","Home improvement, appliances and garden."],
-["Wayfair","Home","🛋️","Furniture and home décor delivered."],
-["Williams Sonoma","Home","🍳","Premium cookware and kitchen essentials."],
-["Resy Restaurants","Dining","🍽️","Reservations at popular local restaurants."],
-["Starbucks","Dining","☕","Coffee, tea and a quick bite on the go."],
-["Uber Eats","Dining","🍔","Restaurant delivery to your door."],
-["DoorDash","Dining","🥡","Food and convenience delivery."],
-["Grubhub","Dining","🍕","Takeout and delivery from local spots."],
-["Marriott Bonvoy","Travel","🏨","Hotels and resorts around the world."],
-["Hilton","Travel","🛎️","Hotels from Hampton to Waldorf Astoria."],
-["Fine Hotels + Resorts","Travel","🌴","Luxury hotel stays with extra perks."],
-["Delta Air Lines","Travel","✈️","Major airline with flights worldwide."],
-["Expedia","Travel","🧳","Book flights, hotels and cars in one place."],
-["Uber","Travel","🚗","Rides around town, anytime."],
-["Hertz","Travel","🚙","Rental cars at airports and in town."],
-["CLEAR","Travel","🛂","Faster airport security with ID scanning."],
-["Disney+","Streaming","🏰","Disney, Pixar, Marvel and Star Wars shows."],
-["Hulu","Streaming","📺","TV shows, movies and next-day episodes."],
-["Peacock","Streaming","🦚","NBC shows, movies, news and sports."],
-["The New York Times","Streaming","📰","News, cooking and games subscription."],
-["Equinox","Fitness","🏋️","Upscale gyms and fitness classes."],
-["SoulCycle","Fitness","🚴","High-energy indoor cycling classes."],
-["Peloton","Fitness","🚲","At-home bikes and streamed workouts."],
-["Apple","Electronics","🍎","iPhone, iPad, Mac and accessories."],
-["Best Buy","Electronics","🔌","TVs, computers, appliances and gadgets."],
-["Dell","Electronics","💻","Laptops, desktops and monitors."],
-["Amazon","Electronics","📦","Shop almost anything, delivered fast."],
-["CVS","Pharmacy","💊","Pharmacy, health and everyday essentials."],
-["Walgreens","Pharmacy","🩺","Pharmacy, vitamins and convenience items."],
-["Chewy","Pets","🐶","Pet food, supplies and pharmacy delivered."],
-["Petco","Pets","🐱","Pet supplies, grooming and vet care."],
-["BarkBox","Pets","🦴","Monthly box of dog toys and treats."],
-["Carter's","Kids","👶","Baby and kids' clothing basics."],
-["Pottery Barn Kids","Kids","🧸","Kids' furniture, bedding and décor."],
-["LEGO","Kids","🧱","Building sets for kids of all ages."]
+["Saks Fifth Avenue","Fashion","","Luxury department store for designer fashion."],
+["Nordstrom","Fashion","","Department store with clothing, shoes and great service."],
+["Macy's","Fashion","","Classic department store for everyday fashion and home."],
+["Lululemon","Fashion","","Athletic and leisure wear built for comfort."],
+["Nike","Fashion","","Sneakers and activewear for every sport."],
+["Tory Burch","Fashion","","Polished designer bags, shoes and clothing."],
+["Sephora","Beauty","","Makeup, skincare and fragrance from top brands."],
+["Ulta Beauty","Beauty","","Beauty products plus an in-store salon."],
+["Bluemercury","Beauty","","Boutique luxury skincare and cosmetics."],
+["Whole Foods Market","Groceries","","Natural and organic grocery store."],
+["Costco","Groceries","","Warehouse club for bulk groceries and more."],
+["Instacart","Groceries","","Grocery delivery from local stores."],
+["Walmart+","Groceries","","Membership with free delivery from Walmart."],
+["Target","Home","","Everyday essentials, home goods and more."],
+["Home Depot","Home","","Tools, hardware and home improvement."],
+["Lowe's","Home","","Home improvement, appliances and garden."],
+["Wayfair","Home","","Furniture and home décor delivered."],
+["Williams Sonoma","Home","","Premium cookware and kitchen essentials."],
+["Resy Restaurants","Dining","","Reservations at popular local restaurants."],
+["Starbucks","Dining","","Coffee, tea and a quick bite on the go."],
+["Uber Eats","Dining","","Restaurant delivery to your door."],
+["DoorDash","Dining","","Food and convenience delivery."],
+["Grubhub","Dining","","Takeout and delivery from local spots."],
+["Marriott Bonvoy","Travel","","Hotels and resorts around the world."],
+["Hilton","Travel","","Hotels from Hampton to Waldorf Astoria."],
+["Fine Hotels + Resorts","Travel","","Luxury hotel stays with extra perks."],
+["Delta Air Lines","Travel","","Major airline with flights worldwide."],
+["Expedia","Travel","","Book flights, hotels and cars in one place."],
+["Uber","Travel","","Rides around town, anytime."],
+["Hertz","Travel","","Rental cars at airports and in town."],
+["CLEAR","Travel","","Faster airport security with ID scanning."],
+["Disney+","Streaming","","Disney, Pixar, Marvel and Star Wars shows."],
+["Hulu","Streaming","","TV shows, movies and next-day episodes."],
+["Peacock","Streaming","","NBC shows, movies, news and sports."],
+["The New York Times","Streaming","","News, cooking and games subscription."],
+["Equinox","Fitness","","Upscale gyms and fitness classes."],
+["SoulCycle","Fitness","","High-energy indoor cycling classes."],
+["Peloton","Fitness","","At-home bikes and streamed workouts."],
+["Apple","Electronics","","iPhone, iPad, Mac and accessories."],
+["Best Buy","Electronics","","TVs, computers, appliances and gadgets."],
+["Dell","Electronics","","Laptops, desktops and monitors."],
+["Amazon","Electronics","","Shop almost anything, delivered fast."],
+["CVS","Pharmacy","","Pharmacy, health and everyday essentials."],
+["Walgreens","Pharmacy","","Pharmacy, vitamins and convenience items."],
+["Chewy","Pets","","Pet food, supplies and pharmacy delivered."],
+["Petco","Pets","","Pet supplies, grooming and vet care."],
+["BarkBox","Pets","","Monthly box of dog toys and treats."],
+["Carter's","Kids","","Baby and kids' clothing basics."],
+["Pottery Barn Kids","Kids","","Kids' furniture, bedding and décor."],
+["LEGO","Kids","","Building sets for kids of all ages."]
 ].map(([name,category,emoji,desc])=>({name,category,emoji,desc}));
 const CATC={Fashion:"#f6eef6",Beauty:"#fdeef2",Groceries:"#edf6ec",Home:"#f4efe7",Dining:"#fdf1e6",Travel:"#eaf2f8",Streaming:"#efedf8",Fitness:"#e9f6f3",Electronics:"#eef0f3",Pharmacy:"#eef6f6",Pets:"#f8f2e6",Kids:"#fbf6dd"};
 const KEY="mw-amex-brand-swipe-v2";
@@ -160,8 +172,9 @@ function cardView(){
  app.innerHTML=`<h1>Which Brands Do You Love?</h1><p class="muted" style="margin:4px 0 0">Swipe right for Yes, left for No. Or tap Maybe or Love.</p>
  <div class="progress"><span>${S.i+1}/${BRANDS.length}</span><button class="link mw-hover" id="back" ${S.i?"":"hidden"}>Undo</button></div><div class="bar"><i style="width:${S.i/BRANDS.length*100}%"></i></div>
  <p class="swipehint gone" id="swipehint" aria-live="polite"><span class="l">←</span> Swipe No · Swipe Yes <span class="r">→</span></p><div class="stack"><div class="card mw-hover" id="card"><span class="stamp like">Yes</span><span class="stamp skip">No</span>
- <div class="emoji">${b.emoji}</div><div class="cat" style="--cat-bg:${CATC[b.category]||"transparent"}">${b.category}</div><h2>${b.name}</h2><p>${b.desc}</p></div></div>
- <div class="btns"><button class="btn c-no mw-hover" data-a="no">← No</button><button class="btn c-maybe mw-hover" data-a="maybe">? Maybe</button><button class="btn c-love mw-hover" data-a="love">♥ Love</button><button class="btn c-yes mw-hover" data-a="yes">Yes →</button></div>
+ <div class="mono" aria-hidden="true">${b.name.replace(/[^A-Za-z0-9 ]/g,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase()}</div><div class="cat" style="--cat-bg:${CATC[b.category]||"transparent"}">${b.category}</div><h2>${b.name}</h2><p>${b.desc}</p></div></div>
+ <div class="btns"><button class="btn c-no mw-hover" data-a="no">← No</button><button class="btn c-maybe mw-hover" data-a="maybe">? Maybe</button><button class="btn c-love mw-hover" data-a="love">♥︎ Love</button><button class="btn c-yes mw-hover" data-a="yes">Yes →</button></div>
+ <label class="sr" for="note" style="position:absolute;left:-9999px">Note</label><textarea class="note" id="note" rows="1" placeholder="Optional note about ${b.name}">${(S.notes&&S.notes[b.name]||"").replace(/</g,"&lt;")}</textarea>
  <p class="hint muted keyhint">Keys: ← No · → Yes · ↓ or M Maybe · ↑ or L Love</p>`;
  app.querySelectorAll(".btn").forEach(x=>x.onclick=()=>act(x.dataset.a));
  const bk=document.getElementById("back");if(bk)bk.onclick=()=>{S.i--;delete S.picks[BRANDS[S.i].name];save();render()};
@@ -175,7 +188,7 @@ function showHint(){const h=document.getElementById("swipehint"),c=document.getE
 function hideHint(){const h=document.getElementById("swipehint"),c=document.getElementById("card");if(h)h.classList.add("gone");if(c)c.classList.remove("nudge")}
 function act(a,dx=0,dy=0){
  hideHint();clearTimeout(idleT);
- const c=document.getElementById("card");const b=BRANDS[S.i];S.picks[b.name]=a;S.i++;save();
+ const c=document.getElementById("card");const b=BRANDS[S.i];S.picks[b.name]=a;{const nt=document.getElementById("note");S.notes=S.notes||{};if(nt&&nt.value.trim())S.notes[b.name]=nt.value.trim();else delete S.notes[b.name]}S.i++;save();
  const tx=a==="yes"?600:a==="no"?-600:0,ty=a==="love"?-700:a==="maybe"?700:0;
  c.style.transition="transform .25s ease-out,opacity .25s";c.style.transform=`translate(${tx||dx}px,${ty||dy}px) rotate(${tx/30}deg)`;c.style.opacity=0;
  setTimeout(render,230);
@@ -188,7 +201,7 @@ function drag(c){let sx,sy,on=false;
   if(dx>100)act("yes");else if(dx<-100)act("no");
   else{armIdle();c.style.transition="transform .2s ease-out";c.style.transform="";c.querySelectorAll(".stamp").forEach(s=>s.style.opacity=0)}};
 }
-document.onkeydown=e=>{if(S.i>=BRANDS.length||!document.getElementById("card"))return;const k={ArrowRight:"yes",ArrowLeft:"no",ArrowDown:"maybe",ArrowUp:"love",m:"maybe",M:"maybe",l:"love",L:"love"}[e.key];if(k){e.preventDefault();act(k)}};
+document.onkeydown=e=>{if(/TEXTAREA|INPUT/.test(e.target.tagName))return;if(S.i>=BRANDS.length||!document.getElementById("card"))return;const k={ArrowRight:"yes",ArrowLeft:"no",ArrowDown:"maybe",ArrowUp:"love",m:"maybe",M:"maybe",l:"love",L:"love"}[e.key];if(k){e.preventDefault();act(k)}};
 function summary(){
  const cats={};BRANDS.forEach(b=>{cats[b.category]??={category:b.category,love:[],yes:[],maybe:[],no:[],total:0};const p=S.picks[b.name],c=cats[b.category];c.total++;
   (c[p]||c.no).push(b.name)});
@@ -196,9 +209,9 @@ function summary(){
  return{ranked,all:cats};
 }
 function asText(){const {ranked}=summary();let t="Mom's Shopping Profile (Mom's Shopping Quiz)\nScore: Love = 3, Yes = 2, Maybe = 1\n\n";
- ranked.forEach((c,i)=>{t+=`${i+1}. ${c.category} (score ${c.score})\n`;if(c.love.length)t+=`   ♥ Love: ${c.love.join(", ")}\n`;if(c.yes.length)t+=`   ✓ Yes: ${c.yes.join(", ")}\n`;if(c.maybe.length)t+=`   ? Maybe: ${c.maybe.join(", ")}\n`});
+ ranked.forEach((c,i)=>{t+=`${i+1}. ${c.category} (score ${c.score})\n`;if(c.love.length)t+=`   ♥︎ Love: ${c.love.join(", ")}\n`;if(c.yes.length)t+=`   ✓ Yes: ${c.yes.join(", ")}\n`;if(c.maybe.length)t+=`   ? Maybe: ${c.maybe.join(", ")}\n`});
  const sk=BRANDS.filter(b=>S.picks[b.name]==="no").map(b=>b.name);t+=`\nNo: ${sk.join(", ")||"None"}\n`;return t}
-function asJSON(){const {ranked}=summary();return JSON.stringify({generated:new Date().toISOString(),scoring:"love=3, yes=2, maybe=1",topCategories:ranked.map((c,i)=>({rank:i+1,category:c.category,score:c.score,love:c.love,yes:c.yes,maybe:c.maybe})),picks:BRANDS.map(b=>({brand:b.name,category:b.category,choice:S.picks[b.name]||null}))},null,2)}
+function asJSON(){const {ranked}=summary();return JSON.stringify({generated:new Date().toISOString(),scoring:"love=3, yes=2, maybe=1",topCategories:ranked.map((c,i)=>({rank:i+1,category:c.category,score:c.score,love:c.love,yes:c.yes,maybe:c.maybe})),picks:BRANDS.map(b=>({brand:b.name,category:b.category,choice:S.picks[b.name]||null,note:(S.notes||{})[b.name]||""}))},null,2)}
 function dl(name,data,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click()}
 function results(){
  document.body.classList.remove("swiping");clearTimeout(idleT);
@@ -206,16 +219,21 @@ function results(){
  app.innerHTML=`<h1>Your Shopping Profile</h1><p class="muted">${n("love")} Love · ${n("yes")} Yes · ${n("maybe")} Maybe · ${n("no")} No</p>
  <h3 style="margin-top:20px">Top Categories</h3>
  ${ranked.length?ranked.map((c,i)=>`<div class="rank mw-hover"><div class="top"><h3><span class="chip" style="background:${CATC[c.category]};font-size:inherit;padding:0 10px">${i+1}. ${c.category}</span></h3><span class="muted">Score ${c.score}</span></div>
- ${[["love","♥ Love"],["yes","✓ Yes"],["maybe","? Maybe"]].filter(([k])=>c[k].length).map(([k,l])=>`<div class="lbl-${k}" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-top:8px">${l}</div><div class="chips" style="margin-top:4px">${c[k].map(x=>`<span class="chip ${k}">${x}</span>`).join("")}</div>`).join("")}</div>`).join(""):`<p class="muted">No picks yet.</p>`}
- <div class="row"><button class="btn solid mw-hover" id="copy">Copy Results</button><button class="btn mw-hover" id="json">Download JSON</button></div>
+ ${[["love","♥︎ Love"],["yes","✓ Yes"],["maybe","? Maybe"]].filter(([k])=>c[k].length).map(([k,l])=>`<div class="lbl-${k}" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-top:8px">${l}</div><div class="chips" style="margin-top:4px">${c[k].map(x=>`<span class="chip ${k}">${x}</span>`).join("")}</div>`).join("")}</div>`).join(""):`<p class="muted">No picks yet.</p>`}
+ <div class="submitbox"><h3 style="margin:0 0 6px">Send Your Picks</h3><p class="muted" style="margin:0 0 12px">One tap sends everything to Max's agent. No copying needed.</p><button class="btn solid submit mw-hover" id="submit">${S.sentAt?"Send Again":"Submit"}</button><div class="sent" id="sent" aria-live="polite">${S.sentAt?"Sent "+new Date(S.sentAt).toLocaleString():""}</div></div>
+ <p class="muted" style="margin:18px 0 0;font-size:13px;text-transform:uppercase;letter-spacing:.1em">Backup Options</p>
+ <div class="row"><button class="btn mw-hover" id="copy">Copy Results</button><button class="btn mw-hover" id="json">Download JSON</button></div>
  <div class="row" style="margin-top:0"><button class="btn mw-hover" id="txt">Download Text</button><button class="btn mw-hover" id="again">Start Over</button></div>
- <p class="hint muted">Send the copied results or file to Max.</p>`;
+ <p class="hint muted">Use these only if Submit does not work.</p>`;
  document.getElementById("copy").onclick=async()=>{try{await navigator.clipboard.writeText(asText());toast("Copied!")}catch{const t=document.createElement("textarea");t.value=asText();document.body.append(t);t.select();document.execCommand("copy");t.remove();toast("Copied!")}};
  document.getElementById("json").onclick=()=>dl("mom-shopping-profile.json",asJSON(),"application/json");
  document.getElementById("txt").onclick=()=>dl("mom-shopping-profile.txt",asText(),"text/plain");
  document.getElementById("again").onclick=reset;
+ document.getElementById("submit").onclick=async()=>{const b=document.getElementById("submit"),m=document.getElementById("sent");b.disabled=true;b.textContent="Sending...";m.className="sent";m.textContent="";
+  try{await MW_SUBMIT("moms-shopping-quiz",JSON.parse(asJSON()));S.sentAt=Date.now();save();b.textContent="Sent";m.textContent="Sent to Max's agent. A copy is saved on this phone.";toast("Sent")}
+  catch(e){b.disabled=false;b.textContent="Try Again";m.className="sent err";m.textContent="Could not send. Check the connection and tap Try Again. Your picks are saved on this phone."}};
 }
-function reset(){if(confirm("Start over and clear all picks?")){S={i:0,picks:{}};save();render()}}
+function reset(){if(confirm("Start over and clear all picks?")){S={i:0,picks:{},notes:{}};save();render()}}
 document.getElementById("reset").onclick=reset;
 render();
 </script></body></html>
