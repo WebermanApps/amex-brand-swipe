@@ -69,6 +69,7 @@ footer{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
 footer{background:#FAF8F4;border-top:1px solid var(--mw-border);color:var(--mw-muted-text);text-align:center;font-size:12px;padding:16px;letter-spacing:var(--mw-tracking-label);text-transform:uppercase}
 .toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:#fff;color:var(--mw-foreground);border:1px solid var(--mw-border);box-shadow:0 6px 18px rgba(10,10,10,.12);padding:10px 16px;border-radius:.5rem;opacity:0;transition:opacity .2s;pointer-events:none}
+footer .dashlink{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:inherit}
 </style><!--mw-polish--><style id="mw-polish">
 /* MW polish layer: /workspace/ops/brand/app-polish-spec.md (Oct 10, 2026). Light mode, brand motion, 44px targets. */
 :root{--mw-ease:cubic-bezier(.2,.8,.2,1);--mw-dur:180ms;--mw-ink:#171717;--mw-grey:#737373;--mw-line:#E5E5E5;--mw-jungle:#0B6E4F;--mw-lagoon:#05668D;--mw-terra:#C1502E}
@@ -104,7 +105,7 @@ window.MW_SUBMIT=async function(app,payload){
 </head><body>
 <header><span class="wordmark">MAX WEBERMAN</span><button class="link mw-hover" id="reset">Start Over</button></header>
 <main id="app"></main>
-<footer>Mom's Shopping Quiz · Built by <a href="https://maxweberman.com" target="_blank" rel="noopener" style="color:inherit">Max Weberman</a></footer>
+<footer><a class="dashlink" href="https://webermanapps.github.io/miles-dashboard/">Miles Dashboard</a> · Mom's Shopping Quiz · Built by <a href="https://maxweberman.com" target="_blank" rel="noopener" style="color:inherit">Max Weberman</a></footer>
 <div class="toast" id="toast"></div>
 <script>
 const BRANDS=[
