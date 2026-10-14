@@ -94,9 +94,11 @@ b.addEventListener('click',async function(){var url=location.origin+location.pat
  try{await navigator.clipboard.writeText(url);b.textContent='Link Copied';setTimeout(function(){b.textContent='⇪ Share'},1800)}catch(e){prompt('Copy this link:',url)}});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();
 </script><!--/mw-polish-->
+<script src="submit.js?v=gr1"></script>
 <script id="mw-submit">/* Submit to owning agent (Miles Agent). Relay: ntfy.sh topic, archived on the box by /workspace/miles/submissions/collect.py */
 window.MW_SUBMIT=async function(app,payload){
- const rec={app:app,owner:"Miles Agent",submittedAt:new Date().toISOString(),page:location.href.split("#")[0],ua:navigator.userAgent,results:payload};
+ if(!window.MWSubmit||!(await window.MWSubmit.gate("miles"))){const e=new Error("Password needed");e.pw=true;throw e}
+ const rec={auth:true,authKey:"6df85d68",app:app,owner:"Miles Agent",submittedAt:new Date().toISOString(),page:location.href.split("#")[0],ua:navigator.userAgent,results:payload};
  const body=JSON.stringify(rec);
  try{const k="mw-submit-backup:"+app,a=JSON.parse(localStorage.getItem(k)||"[]");a.push(rec);localStorage.setItem(k,JSON.stringify(a.slice(-20)))}catch(e){}
  const r=await fetch("https://ntfy.sh/miles-agent-sub-dbd28e3e58043ca06dd2",{method:"POST",body:body});
@@ -234,7 +236,7 @@ function results(){
  document.getElementById("again").onclick=reset;
  document.getElementById("submit").onclick=async()=>{const b=document.getElementById("submit"),m=document.getElementById("sent");b.disabled=true;b.textContent="Sending...";m.className="sent";m.textContent="";
   try{await MW_SUBMIT("moms-shopping-quiz",JSON.parse(asJSON()));S.sentAt=Date.now();save();b.textContent="Sent";m.textContent="Sent to Max's agent. A copy is saved on this phone.";toast("Sent")}
-  catch(e){b.disabled=false;b.textContent="Try Again";m.className="sent err";m.textContent="Could not send. Check the connection and tap Try Again. Your picks are saved on this phone."}};
+  catch(e){b.disabled=false;b.textContent="Try Again";m.className="sent err";m.textContent=e&&e.pw?"Password needed. Nothing was sent.":"Could not send. Check the connection and tap Try Again. Your picks are saved on this phone."}};
 }
 function reset(){if(confirm("Start over and clear all picks?")){S={i:0,picks:{},notes:{}};save();render()}}
 document.getElementById("reset").onclick=reset;
